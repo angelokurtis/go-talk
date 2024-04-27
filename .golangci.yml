@@ -89,7 +89,7 @@ linters-settings:
       { name: "unnecessary-stmt", disabled: false },
       { name: "unreachable-code", disabled: false },
       { name: "unused-parameter", disabled: false },
-      { name: "unused-receiver", disabled: false },
+      { name: "unused-receiver", disabled: true },
       { name: "use-any", disabled: false },
       { name: "useless-break", disabled: false },
       { name: "var-declaration", disabled: false },
