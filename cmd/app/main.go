@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 
 	"github.com/lmittmann/tint"
@@ -40,12 +41,23 @@ func run(ctx context.Context) error {
 
 	defer cleanup()
 
-	msg, err := mgr.Example.Show()
+	slog.InfoContext(ctx, "Manager created successfully")
+
+	voices, err := mgr.ElevenLabsAPI.GetVoices()
 	if err != nil {
 		return err
 	}
 
-	slog.InfoContext(ctx, msg)
+	slog.InfoContext(ctx, "Voices retrieved successfully", slog.Int("number-of-voices", len(voices)))
+
+	for _, voice := range voices {
+		voiceJSON, err := json.Marshal(voice)
+		if err != nil {
+			return errors.Errorf("Failed to marshal voice %v: %w", voice, err)
+		}
+
+		slog.InfoContext(ctx, string(voiceJSON))
+	}
 
 	return nil
 }

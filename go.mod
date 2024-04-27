@@ -8,3 +8,5 @@ require (
 )
 
 require github.com/caarlos0/env/v11 v11.0.0
+
+require github.com/gotidy/ptr v1.4.0 // indirect

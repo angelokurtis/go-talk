@@ -8,19 +8,16 @@ package main
 
 import (
 	"github.com/angelokurtis/go-talk/pkg/demo"
+	"net/http"
 )
 
 // Injectors from wire_inj.go:
 
 func NewManager() (*Manager, func(), error) {
-	config, err := demo.NewConfig()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	myShowcase := demo.NewMyShowcase(config)
+	client := &http.Client{}
+	elevenLabsAPI := demo.NewElevenLabs(client)
 	manager := &Manager{
-		Example: myShowcase,
+		ElevenLabsAPI: elevenLabsAPI,
 	}
 
 	return manager, func() {
