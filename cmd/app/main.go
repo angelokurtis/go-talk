@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"io"
 	"log/slog"
+	"os"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
+	"github.com/gotidy/ptr"
 	"github.com/lmittmann/tint"
 
 	"github.com/angelokurtis/go-talk/internal/errors"
@@ -36,28 +39,41 @@ func main() {
 func run(ctx context.Context) error {
 	mgr, cleanup, err := NewManager()
 	if err != nil {
-		return err
+		return errors.Errorf("failed to create manager: %w", err)
 	}
 
 	defer cleanup()
 
-	slog.InfoContext(ctx, "Manager created successfully")
+	slog.InfoContext(ctx, "Manager created")
 
-	voices, err := mgr.ElevenLabsAPI.GetVoices()
+	body := azopenai.SpeechGenerationOptions{
+		Input:          ptr.Of("Today is a wonderful day to build something people love!"),
+		Voice:          ptr.Of(azopenai.SpeechVoiceAlloy),
+		ResponseFormat: ptr.Of(azopenai.SpeechGenerationResponseFormatMp3),
+	}
+	options := &azopenai.GenerateSpeechFromTextOptions{}
+
+	slog.DebugContext(ctx, "Generating speech from text", slog.String("input", *body.Input), slog.String("voice", string(*body.Voice)), slog.String("format", string(*body.ResponseFormat)))
+
+	res, err := mgr.OpenAPI.GenerateSpeechFromText(ctx, body, options)
 	if err != nil {
-		return err
+		return errors.Errorf("failed to generate speech: %w", err)
 	}
 
-	slog.InfoContext(ctx, "Voices retrieved successfully", slog.Int("number-of-voices", len(voices)))
-
-	for _, voice := range voices {
-		voiceJSON, err := json.Marshal(voice)
-		if err != nil {
-			return errors.Errorf("Failed to marshal voice %v: %w", voice, err)
-		}
-
-		slog.InfoContext(ctx, string(voiceJSON))
+	outFile, err := os.Create("speech.mp3")
+	if err != nil {
+		return errors.Errorf("failed to create output file: %w", err)
 	}
+
+	defer outFile.Close()
+	slog.DebugContext(ctx, "Writing speech to file", slog.String("file", "speech.mp3"))
+
+	_, err = io.Copy(outFile, res.Body)
+	if err != nil {
+		return errors.Errorf("failed to write to file: %w", err)
+	}
+
+	slog.InfoContext(ctx, "Speech file created", slog.String("file", "speech.mp3"))
 
 	return nil
 }

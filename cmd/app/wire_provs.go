@@ -3,8 +3,10 @@ package main
 import (
 	"net/http"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/google/wire"
 
+	"github.com/angelokurtis/go-talk/internal/openai"
 	"github.com/angelokurtis/go-talk/pkg/demo"
 )
 
@@ -16,8 +18,10 @@ var providers = wire.NewSet(
 	demo.NewMyShowcase,
 	demo.NewConfig,
 	demo.NewElevenLabs,
+	openai.NewConfig,
+	openai.NewClient,
 )
 
 type Manager struct {
-	ElevenLabsAPI *demo.ElevenLabsAPI
+	OpenAPI *azopenai.Client
 }

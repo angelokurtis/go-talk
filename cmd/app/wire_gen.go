@@ -7,17 +7,24 @@
 package main
 
 import (
-	"github.com/angelokurtis/go-talk/pkg/demo"
-	"net/http"
+	"github.com/angelokurtis/go-talk/internal/openai"
 )
 
 // Injectors from wire_inj.go:
 
 func NewManager() (*Manager, func(), error) {
-	client := &http.Client{}
-	elevenLabsAPI := demo.NewElevenLabs(client)
+	config, err := openai.NewConfig()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	client, err := openai.NewClient(config)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	manager := &Manager{
-		ElevenLabsAPI: elevenLabsAPI,
+		OpenAPI: client,
 	}
 
 	return manager, func() {
