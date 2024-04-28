@@ -53,7 +53,11 @@ func run(ctx context.Context) error {
 	}
 	options := &azopenai.GenerateSpeechFromTextOptions{}
 
-	slog.DebugContext(ctx, "Generating speech from text", slog.String("input", *body.Input), slog.String("voice", string(*body.Voice)), slog.String("format", string(*body.ResponseFormat)))
+	slog.DebugContext(ctx, "Generating speech from text",
+		slog.String("input", *body.Input),
+		slog.String("voice", string(*body.Voice)),
+		slog.String("format", string(*body.ResponseFormat)),
+	)
 
 	res, err := mgr.OpenAPI.GenerateSpeechFromText(ctx, body, options)
 	if err != nil {
