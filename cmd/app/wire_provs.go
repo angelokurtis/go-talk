@@ -12,16 +12,20 @@ import (
 
 //nolint:unused // This function is used during compile-time to generate code for dependency injection
 var providers = wire.NewSet(
-	wire.Struct(new(http.Client)),
-	wire.Struct(new(Manager), "*"),
-	wire.Bind(new(demo.Showcase), new(*demo.MyShowcase)),
-	demo.NewMyShowcase,
 	demo.NewConfig,
 	demo.NewElevenLabs,
-	openai.NewConfig,
+	demo.NewMP3Writer,
+	demo.NewMyShowcase,
+	demo.NewSpeechGenerator,
 	openai.NewClient,
+	openai.NewConfig,
+	wire.Bind(new(demo.OpenAI), new(*azopenai.Client)),
+	wire.Bind(new(demo.Showcase), new(*demo.MyShowcase)),
+	wire.Struct(new(http.Client)),
+	wire.Struct(new(Manager), "*"),
 )
 
 type Manager struct {
-	OpenAPI *azopenai.Client
+	SpeechGenerator *demo.SpeechGenerator
+	MP3Writer       *demo.MP3Writer
 }

@@ -2,12 +2,8 @@ package main
 
 import (
 	"context"
-	"io"
 	"log/slog"
-	"os"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
-	"github.com/gotidy/ptr"
 	"github.com/lmittmann/tint"
 
 	"github.com/angelokurtis/go-talk/internal/errors"
@@ -46,39 +42,7 @@ func run(ctx context.Context) error {
 
 	slog.InfoContext(ctx, "Manager created")
 
-	body := azopenai.SpeechGenerationOptions{
-		DeploymentName: ptr.Of("tts-1"),
-		Voice:          ptr.Of(azopenai.SpeechVoiceAlloy),
-		ResponseFormat: ptr.Of(azopenai.SpeechGenerationResponseFormatMp3),
-		Input:          ptr.Of("Today is a wonderful day to build something people love!"),
-	}
-	options := &azopenai.GenerateSpeechFromTextOptions{}
-
-	slog.DebugContext(ctx, "Generating speech from text",
-		slog.String("input", *body.Input),
-		slog.String("voice", string(*body.Voice)),
-		slog.String("format", string(*body.ResponseFormat)),
-	)
-
-	res, err := mgr.OpenAPI.GenerateSpeechFromText(ctx, body, options)
-	if err != nil {
-		return errors.Errorf("failed to generate speech: %w", err)
-	}
-
-	outFile, err := os.Create("speech.mp3")
-	if err != nil {
-		return errors.Errorf("failed to create output file: %w", err)
-	}
-
-	defer outFile.Close()
-	slog.DebugContext(ctx, "Writing speech to file", slog.String("file", "speech.mp3"))
-
-	_, err = io.Copy(outFile, res.Body)
-	if err != nil {
-		return errors.Errorf("failed to write to file: %w", err)
-	}
-
-	slog.InfoContext(ctx, "Speech file created", slog.String("file", "speech.mp3"))
+	_ = mgr
 
 	return nil
 }

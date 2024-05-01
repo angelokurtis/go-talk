@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/angelokurtis/go-talk/internal/openai"
+	"github.com/angelokurtis/go-talk/pkg/demo"
 )
 
 // Injectors from wire_inj.go:
@@ -23,8 +24,11 @@ func NewManager() (*Manager, func(), error) {
 		return nil, nil, err
 	}
 
+	speechGenerator := demo.NewSpeechGenerator(client)
+	mp3Writer := demo.NewMP3Writer()
 	manager := &Manager{
-		OpenAPI: client,
+		SpeechGenerator: speechGenerator,
+		MP3Writer:       mp3Writer,
 	}
 
 	return manager, func() {
