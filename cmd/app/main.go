@@ -47,9 +47,10 @@ func run(ctx context.Context) error {
 	slog.InfoContext(ctx, "Manager created")
 
 	body := azopenai.SpeechGenerationOptions{
-		Input:          ptr.Of("Today is a wonderful day to build something people love!"),
+		DeploymentName: ptr.Of("tts-1"),
 		Voice:          ptr.Of(azopenai.SpeechVoiceAlloy),
 		ResponseFormat: ptr.Of(azopenai.SpeechGenerationResponseFormatMp3),
+		Input:          ptr.Of("Today is a wonderful day to build something people love!"),
 	}
 	options := &azopenai.GenerateSpeechFromTextOptions{}
 

@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Endpoint  string `env:"OPENAI_ENDPOINT" envDefault:"https://api.openai.com"`
+	Endpoint  string `env:"OPENAI_ENDPOINT" envDefault:"https://api.openai.com/v1"`
 	OpenAIKey string `env:"OPENAI_KEY,required"`
 }
 
