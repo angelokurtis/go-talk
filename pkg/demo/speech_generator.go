@@ -39,12 +39,7 @@ func (sg *SpeechGenerator) GenerateSpeech(ctx context.Context, input string) (io
 		return nil, errors.Errorf("failed to generate speech: %w", err)
 	}
 
-	slog.InfoContext(ctx, "Speech generation successful",
-		slog.String("input", *body.Input),
-		slog.String("voice", string(*body.Voice)),
-		slog.String("format", string(*body.ResponseFormat)),
-		slog.String("deployment", *body.DeploymentName),
-	)
+	slog.InfoContext(ctx, "Speech generated")
 
 	return res.Body, nil
 }

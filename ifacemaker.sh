@@ -7,7 +7,6 @@ go run -mod=mod github.com/vburenin/ifacemaker@latest \
   --struct=Client \
   --iface=OpenAI \
   --pkg=demo \
-  --iface-comment='<iface> ...' \
   --doc=false \
   --output=/home/kurtis/wrkspc/github.com/angelokurtis/go-talk/pkg/demo/openai.go
 

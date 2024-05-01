@@ -42,7 +42,10 @@ func run(ctx context.Context) error {
 
 	slog.InfoContext(ctx, "Manager created")
 
-	_ = mgr
+	speech, err := mgr.SpeechGenerator.GenerateSpeech(ctx, "Defesa que ninguém passa\nLinha atacante de raça\nTorcida que canta e vibra\n\nPor nosso Alviverde inteiro\nQue sabe ser brasileiro\nOstentando a sua fibra\n\n")
+	if err != nil {
+		return err
+	}
 
-	return nil
+	return mgr.MP3Writer.Write(ctx, speech)
 }
